@@ -1,10 +1,12 @@
-const { network } = require("hardhat")
+const { network, run } = require("hardhat")
 const { networkConfig, developmentChains } = require("../helper-hardhat")
+const { verify } = require("../utils/verify")
 
 module.exports = async (hre) => {
     const { getNamedAccounts, deployments } = hre
     const { deploy, log, get } = deployments
     const { deployer } = await getNamedAccounts()
+    const chainId = network.config.chainId
 
     let ethUsdPriceFeed
     if (developmentChains.includes(network.name)) {
@@ -13,12 +15,21 @@ module.exports = async (hre) => {
     } else {
         ethUsdPriceFeed = networkConfig[chainId]["ethUsdPriceFeed"]
     }
+
+    const args = [ethUsdPriceFeed]
     const fundMe = await deploy("FundMe", {
         from: deployer,
-        args: [ethUsdPriceFeed],
+        args: args,
         log: true,
+        waitConfirmation: network.config.blockConfirmation || 1,
     })
 
+    if (
+        !developmentChains.includes(network.name) &&
+        process.env.ETHERSCAN_API_KEY
+    ) {
+        await verify(fundMe.address, args)
+    }
     log("-----------------------------")
 }
 
