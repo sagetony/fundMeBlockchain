@@ -32,5 +32,38 @@ describe("FundMe", async function () {
             const response = await fundMe.addressToAmountFunded(deployer)
             assert.equal(response.toString(), sendValue.toString())
         })
+        it("Update the sender database", async () => {
+            await fundMe.fund({ value: sendValue })
+            const funder = await fundMe.funders(0)
+            assert.equal(funder, deployer)
+        })
+    })
+    describe("withdraw", async function () {
+        beforeEach(async function () {
+            await fundMe.fund({ value: sendValue })
+        })
+        it("check if its the owner!!", async function () {
+            const owner = await fundMe.i_owner()
+            assert.equal(owner, deployer)
+        })
+        it("withdrawal has been made!!", async function () {
+            const startedAmount = await fundMe.provider.getBalance(
+                fundMe.address
+            )
+            const startedAmountDeployer = await fundMe.provider.getBalance(
+                deployer
+            )
+            const transactionResponse = await fundMe.withdraw()
+            const transactionReceipt = await transactionResponse.wait(1)
+            const { gasUsed, effectiveGasPrice } = transactionReceipt
+            const gasCost = gasUsed.mul(effectiveGasPrice)
+            const endedAmount = await fundMe.provider.getBalance(fundMe.address)
+            const endAmountDeployer = await fundMe.provider.getBalance(deployer)
+            assert.equal(endedAmount, 0)
+            assert.equal(
+                startedAmount.add(startedAmountDeployer).toString(),
+                endAmountDeployer.add(gasCost).toString()
+            )
+        })
     })
 })
