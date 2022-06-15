@@ -7,7 +7,7 @@ module.exports = async (hre) => {
     const { deploy, log, get } = deployments
     const { deployer } = await getNamedAccounts()
     const chainId = network.config.chainId
-
+    log({ deployer })
     let ethUsdPriceFeed
     if (developmentChains.includes(network.name)) {
         const ethUsdAggregator = await get("MockV3Aggregator")
