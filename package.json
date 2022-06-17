@@ -1,4 +1,7 @@
 {
+  "name": "hardhat-fund-me",
+  "author": "Uchechukwu Anthony",
+  "version": "1.0.0",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
@@ -14,6 +17,15 @@
   "dependencies": {
     "@chainlink/contracts": "^0.4.1",
     "dotenv": "^16.0.1"
+  },
+
+   "scripts": {
+    "test": "hardhat test",
+    "test:staging": "hardhat test --network rinkeby",
+    "lint": "solhint 'contracts/*.sol'",
+    "lint:fix": "solhint 'contracts/**/*.sol' --fix",
+    "format": "prettier --write .",
+    "coverage": "hardhat coverage"
   }
 
   

@@ -3,7 +3,7 @@ const { assert } = require("chai")
 const { developmentChains } = require("../../helper-hardhat")
 let fundMe
 let deployer
-const sendValue = ethers.utils.parseEther("0.5")
+const sendValue = ethers.utils.parseEther("0.008")
 developmentChains.includes(network.name)
     ? describe.skip
     : describe("FundMe", async function () {
